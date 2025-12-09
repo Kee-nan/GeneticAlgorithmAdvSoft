@@ -127,9 +127,9 @@ def run_ga_trial(problem_id: str, ga_params: Dict, evaluator: Callable = None):
     last_gen = results['history'][-1]
 
     return {
-        "avg_coverage": last_gen["avg_coverage"],
-        "failures": last_gen["bug_detections"],
-        "n_tests": ga_params.get('population_size', 50) * ga_params.get('generations', 10)
+    "avg_coverage": sum(gen["avg_coverage"] for gen in results["history"]) / len(results["history"]),
+    "failures": results["total_failures"],  # cumulative across generations
+    "n_tests": ga_params.get('population_size', 50) * ga_params.get('generations', 10)
     }
 
 # Comparison Runner
@@ -194,7 +194,7 @@ def run_comparison(
 if __name__ == "__main__":
     # Add whatever problems you want to run here
     problem_ids = [
-        "reverse_pairs"
+        "edit_distance", "decode_ways", "maximal_rectangle"
     ]
     for pid in problem_ids:
         print(f"\n=== Running comparison for: {pid} ===")

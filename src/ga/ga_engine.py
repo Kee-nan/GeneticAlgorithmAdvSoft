@@ -37,11 +37,16 @@ class GAEngine:
         population = Population(initial_individuals)
         history = []
 
+        total_failures = 0  # NEW: cumulative failures across all generations
+
         for gen in range(self.generations):
-            population.evaluate(lambda ind: evaluate_individual(ind, self.problem_id, self.config.get("problem_map"), archive=self.archive)) ####
+            # Evaluate population
+            population.evaluate(lambda ind: evaluate_individual(
+                ind, self.problem_id, self.config.get("problem_map"), archive=self.archive
+            ))
 
             # Elitism
-            elite_count = self.config.get("elitism", 2)
+            elite_count = self.config.get("elitism", 0)
             elites = population.get_elite(elite_count)
             print(f"\n--- Generation {gen} ---")
             print(f"Elites (top {elite_count}): {[e.fitness for e in elites]}")
@@ -52,7 +57,7 @@ class GAEngine:
             parents = population.select_tournament(k=num_to_select, tournament_size=tournament_size)
             print(f"Selected {len(parents)} parents for mating")
 
-            # DEBUG: show first few parent args
+            # DEBUG: sample parent args
             print("[DEBUG] Sample parents args (first 3):")
             for i, p in enumerate(parents[:3]):
                 print(f"Parent {i}: args={p.as_kwargs()}")
@@ -71,11 +76,9 @@ class GAEngine:
                 child_a = mutate(child_a, self.problem_id, self.mutation_prob, self.config)
                 child_b = mutate(child_b, self.problem_id, self.mutation_prob, self.config)
 
-
                 children.extend([child_a, child_b])
 
             print(f"Generated {len(children)} children")
-            # DEBUG: show first few children args
             print("[DEBUG] Sample children args (first 3):")
             for i, child in enumerate(children[:3]):
                 print(f"Child {i}: args={child.as_kwargs()}")
@@ -84,28 +87,28 @@ class GAEngine:
             for i, child in enumerate(children[:5]):
                 print(f"Child {i} type: {type(child)}, fitness: {child.fitness}, coverage: {child.coverage}")
 
-
             # New population
             new_individuals = elites + children[:self.population_size - len(elites)]
             population = Population(new_individuals)
 
             # Evaluate new population
             population.evaluate(lambda ind: self.evaluator(
-                ind,
-                self.problem_id,
-                self.config.get("problem_map"),
-                archive=self.archive
+                ind, self.problem_id, self.config.get("problem_map"), archive=self.archive
             ))
 
-            # DEBUG: first few individuals after evaluation
+            # DEBUG: first few individuals
             print(f"[DEBUG] After GA evaluation, Gen {gen} sample:")
             for i, ind in enumerate(population.individuals[:3]):
                 print(f"Ind {i}: fitness={ind.fitness}, coverage={ind.coverage}, detected_bug={ind.detected_bug}")
 
+            # Stats for this generation
             best_ind = max(population.individuals, key=lambda ind: ind.fitness or 0)
             avg_fitness = sum(ind.fitness or 0 for ind in population.individuals) / len(population.individuals)
             avg_coverage = sum(ind.coverage or 0 for ind in population.individuals) / len(population.individuals)
             bug_detections = sum(1 for ind in population.individuals if ind.detected_bug)
+
+            # Accumulate failures across all generations
+            total_failures += bug_detections
 
             history.append({
                 "generation": gen,
@@ -118,8 +121,12 @@ class GAEngine:
             })
 
             print(f"[GA] Gen {gen}: Best fitness={best_ind.fitness:.2f}, "
-                  f"Best coverage={best_ind.coverage:.2f}, "
-                  f"Bug detections={bug_detections}")
+                f"Best coverage={best_ind.coverage:.2f}, "
+                f"Bug detections={bug_detections}")
 
         best_overall = max(population.individuals, key=lambda ind: ind.fitness or 0)
-        return {"best_individual": best_overall, "history": history}
+        return {
+            "best_individual": best_overall,
+            "history": history,
+            "total_failures": total_failures  # NEW: cumulative failures
+        }
