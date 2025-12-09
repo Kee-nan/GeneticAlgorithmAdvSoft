@@ -1,0 +1,6 @@
+trial,problem,random_avg_coverage,random_failures,random_n_tests,ga_avg_coverage,ga_failures,ga_n_tests
+1,maximal_rectangle,38.60294117647059,3,10,49.764705882352935,6,500
+2,maximal_rectangle,19.11764705882353,3,10,49.8235294117647,41,500
+3,maximal_rectangle,25.0,6,10,50.0,10,500
+4,maximal_rectangle,26.838235294117645,2,10,49.470588235294116,10,500
+5,maximal_rectangle,41.1764705882353,3,10,50.0,6,500
