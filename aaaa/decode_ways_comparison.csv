@@ -1,6 +1,0 @@
-trial,problem,random_avg_coverage,random_failures,random_n_tests,ga_avg_coverage,ga_failures,ga_n_tests
-1,decode_ways,46.42857142857143,8,10,50.0,41,500
-2,decode_ways,42.857142857142854,4,10,50.0,50,500
-3,decode_ways,41.785714285714285,6,10,50.0,50,500
-4,decode_ways,42.5,7,10,50.0,40,500
-5,decode_ways,49.642857142857146,9,10,50.0,44,500

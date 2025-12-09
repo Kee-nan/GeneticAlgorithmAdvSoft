@@ -1,6 +1,0 @@
-trial,problem,random_avg_coverage,random_failures,random_n_tests,ga_avg_coverage,ga_failures,ga_n_tests
-1,median_two_arrays,35.55555555555556,1,10,42.22222222222219,5,500
-2,median_two_arrays,21.85185185185185,4,10,42.22222222222219,5,500
-3,median_two_arrays,30.740740740740737,6,10,42.22222222222219,3,500
-4,median_two_arrays,33.333333333333336,6,10,42.22222222222219,0,500
-5,median_two_arrays,36.44444444444445,0,10,41.95555555555552,7,500

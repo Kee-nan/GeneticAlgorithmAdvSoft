@@ -1,6 +1,0 @@
-trial,problem,random_avg_coverage,random_failures,random_n_tests,ga_avg_coverage,ga_failures,ga_n_tests
-1,search_rotated,37.85714285714286,1,10,50.0,0,500
-2,search_rotated,37.14285714285714,0,10,49.35714285714286,0,500
-3,search_rotated,33.92857142857143,0,10,50.0,0,500
-4,search_rotated,33.214285714285715,0,10,49.42857142857143,0,500
-5,search_rotated,33.92857142857142,0,10,49.35714285714286,43,500
